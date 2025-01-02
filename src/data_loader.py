@@ -100,6 +100,28 @@ def construct_training_data(data, negative_data):
         training_data[key] = combined
     return training_data
 
+# def create_dataloaders(data, mappings, seed=0, batch_size=64):
+
+#     negative_data = generate_negative_samples(data, mappings, sample_size=1, seed=seed)
+#     training_data = construct_training_data(data, negative_data)
+#     dataloaders = {}
+#     for task_type, dataframe in training_data.items():
+#         dataset = TaskDataset(dataframe, task_type)
+#         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
+#         dataloaders[task_type] = dataloader
+#     iterators = {task: iter(loader) for task, loader in dataloaders.items()}
+#     remaining_tasks = set(dataloaders.keys())
+#     while remaining_tasks:
+#         batch = {}
+#         for task in list(remaining_tasks):  # Use list to avoid modifying the set during iteration
+#             try:
+#                 batch[task] = next(iterators[task])
+#             except StopIteration:
+#                 # Remove task from remaining_tasks when its data is exhausted
+#                 remaining_tasks.remove(task)
+#         if batch:  # Yield only if there is data in the batch
+#             yield batch
+
 def create_dataloaders(data, mappings, seed=0, batch_size=64):
 
     negative_data = generate_negative_samples(data, mappings, sample_size=1, seed=seed)
@@ -109,29 +131,7 @@ def create_dataloaders(data, mappings, seed=0, batch_size=64):
         dataset = TaskDataset(dataframe, task_type)
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
         dataloaders[task_type] = dataloader
-    iterators = {task: iter(loader) for task, loader in dataloaders.items()}
-    remaining_tasks = set(dataloaders.keys())
-    while remaining_tasks:
-        batch = {}
-        for task in list(remaining_tasks):  # Use list to avoid modifying the set during iteration
-            try:
-                batch[task] = next(iterators[task])
-            except StopIteration:
-                # Remove task from remaining_tasks when its data is exhausted
-                remaining_tasks.remove(task)
-        if batch:  # Yield only if there is data in the batch
-            yield batch
-
-# def create_dataloaders(data, mappings, seed=0, batch_size=64):
-
-#     negative_data = generate_negative_samples(data, mappings, sample_size=50, seed=seed)
-#     training_data = construct_training_data(data, negative_data)
-#     dataloaders = {}
-#     for task_type, dataframe in training_data.items():
-#         dataset = TaskDataset(dataframe, task_type)
-#         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
-#         dataloaders[task_type] = dataloader
-#     return dataloaders
+    return dataloaders
 
 if __name__ == "__main__":
     dataset = 'RadLex'

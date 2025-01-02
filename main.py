@@ -19,12 +19,11 @@ def main(dataset):
     data = load_data(dataset)
     mappings = load_mappings(dataset)
     batch_size = 500
-    train_data = create_dataloaders(data, mappings,batch_size=batch_size)
+    train_data = create_dataloaders(data, mappings, batch_size=batch_size)
     num_individuals, num_concepts, num_relations = get_nums(mappings)
     embedding_dim = 1000
     learning_rate = 1e-3
     num_epochs = 100
-    alpha = {"ArB": 1.0, "arb": 2.0, "a_in_A": 1.0, "A_in_B": 1.0}
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # device = torch.device("cpu")
     train_filter_ar = {}
@@ -52,11 +51,11 @@ def main(dataset):
 
     best_val_loss = float("inf")
     for epoch in range(num_epochs):
-        train_loss, train_task_losses = train(model, train_data, optimizer, criterions, device, alpha)
+        train_task_losses = train(model, train_data, optimizer, criterions, device)
         val_losses = validate(model, testDataloader, criterions, batch_size, device)
 
         # 打印损失
-        print(f"Epoch {epoch+1}/{num_epochs} - Train Loss: {train_loss:.4f}")
+        print(f"Epoch {epoch+1}/{num_epochs}")
         for task, loss in train_task_losses.items():
             print(f"  Task {task}: Loss = {loss:.4f}")
         print(f"Valid Loss = {val_losses:.4f}")
