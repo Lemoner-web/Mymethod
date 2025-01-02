@@ -100,27 +100,31 @@ def construct_training_data(data, negative_data):
         training_data[key] = combined
     return training_data
 
-def create_dataloaders(data, mappings, seed=0, batch_size=64):
+def create_dataloaders(data, mappings, seed=0, batch_size=64, sample_size=1, num_epochs=1):
 
-    negative_data = generate_negative_samples(data, mappings, sample_size=1, seed=seed)
+    negative_data = generate_negative_samples(data, mappings, sample_size=sample_size, seed=seed)
     training_data = construct_training_data(data, negative_data)
     dataloaders = {}
     for task_type, dataframe in training_data.items():
         dataset = TaskDataset(dataframe, task_type)
         dataloader = DataLoader(dataset, batch_size=batch_size, shuffle=True)
         dataloaders[task_type] = dataloader
-    iterators = {task: iter(loader) for task, loader in dataloaders.items()}
-    remaining_tasks = set(dataloaders.keys())
-    while remaining_tasks:
-        batch = {}
-        for task in list(remaining_tasks):  # Use list to avoid modifying the set during iteration
-            try:
-                batch[task] = next(iterators[task])
-            except StopIteration:
-                # Remove task from remaining_tasks when its data is exhausted
-                remaining_tasks.remove(task)
-        if batch:  # Yield only if there is data in the batch
+    for _ in range(num_epochs):
+        iterators = {task: iter(loader) for task, loader in dataloaders.items()}
+        while True:
+            batch = {}
+            all_exhausted = True
+            for task in data.keys():
+                try:
+                    batch[task] = next(iterators[task])
+                    all_exhausted = False
+                except StopIteration:
+                    continue
+            if all_exhausted:
+                break
             yield batch
+
+    
 
 # def create_dataloaders(data, mappings, seed=0, batch_size=64):
 
@@ -137,8 +141,10 @@ if __name__ == "__main__":
     dataset = 'RadLex'
     data = load_data(dataset)
     mappings = load_mappings(dataset)
-    dataloaders = create_dataloaders(data, mappings)
-    print(len(dataloaders))
+    num_epochs = 2
+    dataloaders = create_dataloaders(data, mappings, num_epochs)
+    for batch in dataloaders:
+        print(batch)
     # batch = next(dataloaders)
     # print(batch)
 
