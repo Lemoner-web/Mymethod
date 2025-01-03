@@ -21,9 +21,9 @@ def main(dataset):
     batch_size = 500
     train_data = create_dataloaders(data, mappings, batch_size=batch_size)
     num_individuals, num_concepts, num_relations = get_nums(mappings)
-    embedding_dim = 1000
+    embedding_dim = 200
     learning_rate = 1e-3
-    num_epochs = 100
+    num_epochs = 200
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     # device = torch.device("cpu")
     train_filter_ar = {}
