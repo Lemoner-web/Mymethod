@@ -55,7 +55,7 @@ def train(model, dataloaders, optimizer, criterions, device):
     total_losses = {task: 0 for task in dataloaders.keys()}  # 每个任务的损失
     for task, dataloader in dataloaders.items():
         for batch in dataloader:
-            batch_loss = 0
+            # batch_loss = 0
             # 将数据移动到GPU或CPU
             if task == "ArB":
                 A, r, B, label = [x.to(device) for x in batch]
@@ -79,15 +79,15 @@ def train(model, dataloaders, optimizer, criterions, device):
                 loss = criterions['bce'](pred.squeeze(1), label)
             else:
                 raise ValueError(f"Unknown task: {task}")
-            reg_loss = compute_l2_regularization(model, 1e-2)
-            batch_loss = reg_loss + loss
+            # reg_loss = compute_l2_regularization(model, 1e-2)
+            # batch_loss = reg_loss + loss
             # 反向传播和优化
             optimizer.zero_grad()
-            batch_loss.backward()
+            loss.backward()
             optimizer.step()
 
             # 累加损失
-            total_losses[task] += batch_loss.item()
+            total_losses[task] += loss.item()
 
     # 平均每个任务的损失
     for task in total_losses:
