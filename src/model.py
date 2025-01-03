@@ -14,11 +14,11 @@ class MultiTaskEmbeddingModel(nn.Module):
         self.relation_matrices = nn.Embedding(num_relations, embedding_dim * embedding_dim)
 
         # 对 concept_embeddings 和 individual_embeddings 进行 Xavier 初始化
-        init.xavier_uniform_(self.concept_embeddings.weight)
-        init.xavier_uniform_(self.individual_embeddings.weight)
+        # init.xavier_uniform_(self.concept_embeddings.weight)
+        # init.xavier_uniform_(self.individual_embeddings.weight)
 
-        # 对 relation_matrices 进行初始化
-        init.xavier_uniform_(self.relation_matrices.weight)
+        # # 对 relation_matrices 进行初始化
+        # init.xavier_uniform_(self.relation_matrices.weight)
 
         # MLP for membership prediction (a ∈ A, A ⊆ B)
         self.mlp_a_in_A = nn.Sequential(nn.Linear(embedding_dim * 2, 64), nn.ReLU(), nn.Linear(64, 1))

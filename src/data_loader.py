@@ -124,7 +124,7 @@ def construct_training_data(data, negative_data):
 
 def create_dataloaders(data, mappings, seed=0, batch_size=64):
 
-    negative_data = generate_negative_samples(data, mappings, sample_size=1, seed=seed)
+    negative_data = generate_negative_samples(data, mappings, sample_size=50, seed=seed)
     training_data = construct_training_data(data, negative_data)
     dataloaders = {}
     for task_type, dataframe in training_data.items():

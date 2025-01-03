@@ -50,6 +50,7 @@ def main(dataset):
     criterions = {"nll": CustomLoss(), "bce": nn.BCELoss()}
 
     best_val_loss = float("inf")
+    print('Train Start!')
     for epoch in range(num_epochs):
         train_task_losses = train(model, train_data, optimizer, criterions, device)
         val_losses = validate(model, testDataloader, criterions, batch_size, device)
